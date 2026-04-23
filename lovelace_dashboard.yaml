@@ -1,0 +1,95 @@
+# Fahrtenbuch Lovelace Dashboard
+#
+# Einbinden via: Einstellungen → Dashboards → Dashboard hinzufügen → YAML
+# oder den Inhalt in eine bestehende Lovelace-Konfiguration kopieren.
+#
+# Voraussetzung: HACS-Karten "button-card" und "auto-entities" sind hilfreich,
+# aber nicht zwingend nötig – dieses Beispiel nutzt nur eingebaute HA-Karten.
+
+title: Fahrtenbuch
+views:
+  - title: Fahrtenbuch
+    icon: mdi:car-key
+    path: fahrtenbuch
+    cards:
+
+      # ---- Statusanzeige -------------------------------------------------
+      - type: entities
+        title: Fahrtenstatus
+        show_header_toggle: false
+        entities:
+          - entity: sensor.fahrtenbuch_status
+            name: Status
+          - entity: sensor.fahrtenbuch_aktuelle_fahrt_start_km
+            name: Start-KM (aktive Fahrt)
+          - type: divider
+          - entity: sensor.fahrtenbuch_fahrten_gesamt
+            name: Fahrten gesamt
+          - entity: sensor.fahrtenbuch_dienstliche_km
+            name: Dienstliche KM (gesamt)
+          - entity: sensor.fahrtenbuch_private_km
+            name: Private KM (gesamt)
+
+      # ---- Aktions-Buttons -----------------------------------------------
+      - type: horizontal-stack
+        cards:
+
+          - type: button
+            name: Fahrt starten
+            icon: mdi:play-circle-outline
+            icon_height: 48px
+            tap_action:
+              action: call-service
+              service: fahrtenbuch.start_trip
+              confirmation:
+                text: Fahrt jetzt starten?
+
+          - type: button
+            name: Dienstlich beenden
+            icon: mdi:briefcase-check-outline
+            icon_height: 48px
+            tap_action:
+              action: call-service
+              service: fahrtenbuch.stop_trip
+              service_data:
+                trip_type: dienstlich
+              confirmation:
+                text: Fahrt als DIENSTLICH beenden?
+
+          - type: button
+            name: Privat beenden
+            icon: mdi:home-check-outline
+            icon_height: 48px
+            tap_action:
+              action: call-service
+              service: fahrtenbuch.stop_trip
+              service_data:
+                trip_type: privat
+              confirmation:
+                text: Fahrt als PRIVAT beenden?
+
+      # ---- Letzte Fahrten (aus Sensor-Attributen) ------------------------
+      - type: markdown
+        title: Letzte Fahrten
+        content: >
+          {% set trips = state_attr('sensor.fahrtenbuch_fahrten_gesamt', 'letzte_fahrten') %}
+          {% if trips %}
+          | Datum | Start | Ende | KM | Typ | Zweck |
+          |-------|-------|------|-----|-----|-------|
+          {% for t in trips %}
+          | {{ t.start_time[:10] }} | {{ t.start_time[11:16] }} | {{ t.end_time[11:16] if t.end_time else '–' }} | {{ t.km_driven }} | {{ t.trip_type }} | {{ t.purpose if t.purpose else '–' }} |
+          {% endfor %}
+          {% else %}
+          *Noch keine Fahrten aufgezeichnet.*
+          {% endif %}
+
+      # ---- CSV-Export ----------------------------------------------------
+      - type: button
+        name: Als CSV exportieren
+        icon: mdi:file-export-outline
+        tap_action:
+          action: call-service
+          service: fahrtenbuch.export_csv
+          confirmation:
+            text: >
+              Fahrtenbuch als CSV in das HA-Konfigurationsverzeichnis exportieren?
