@@ -86,10 +86,10 @@ views:
         content: |
           {% set trips = state_attr('sensor.fahrtenbuch_fahrten_gesamt', 'letzte_fahrten') %}
           {%- if trips %}
-          | Datum | Von | Bis | km | Typ | Zweck |
-          |:------|:---:|:---:|---:|:----|:------|
+          | Datum | Von | Bis | Start-KM | End-KM | Gefahren | Typ | Zweck |
+          |:------|:---:|:---:|---:|---:|---:|:----|:------|
           {%- for t in trips %}
-          | {{ t.start_time | as_datetime | as_timestamp | timestamp_custom('%d.%m.%Y') }} | {{ t.start_time | as_datetime | as_timestamp | timestamp_custom('%H:%M') }} | {{ t.end_time | as_datetime | as_timestamp | timestamp_custom('%H:%M') if t.end_time else '–' }} | {{ t.km_driven | default('–') }} | {{ '🏢' if t.trip_type == 'dienstlich' else '🏠' }} {{ t.trip_type }} | {{ t.purpose if t.purpose else '–' }} |
+          | {{ t.start_time | as_datetime | as_timestamp | timestamp_custom('%d.%m.%Y') }} | {{ t.start_time | as_datetime | as_timestamp | timestamp_custom('%H:%M') }} | {{ t.end_time | as_datetime | as_timestamp | timestamp_custom('%H:%M') if t.end_time else '–' }} | {{ t.start_km | default('–') }} | {{ t.end_km | default('–') }} | {{ t.km_driven | default('–') }} | {{ '🏢' if t.trip_type == 'dienstlich' else '🏠' }} {{ t.trip_type }} | {{ t.purpose if t.purpose else '–' }} |
           {%- endfor %}
           {%- else %}
           *Noch keine Fahrten aufgezeichnet.*
