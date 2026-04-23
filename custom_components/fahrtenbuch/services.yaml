@@ -1,15 +1,30 @@
 start_trip:
   name: Fahrt starten
   description: >
-    Startet eine neue Fahrt. Der aktuelle KM-Stand des Autos und der Standort
-    der konfigurierten Person werden automatisch erfasst.
-  fields: {}
+    Startet eine neue Fahrt. KM-Stand und Standort werden automatisch vom
+    Sensor gelesen. Mit start_km kann der KM-Stand manuell überschrieben
+    werden (nützlich wenn der Sensor verzögert aktualisiert).
+  fields:
+    start_km:
+      name: Start-KM (manuell)
+      description: >
+        Optionaler KM-Stand bei Fahrtbeginn. Wenn angegeben, wird der
+        Sensorwert ignoriert.
+      required: false
+      example: 12345
+      selector:
+        number:
+          min: 0
+          max: 9999999
+          step: 0.1
+          unit_of_measurement: km
 
 stop_trip:
   name: Fahrt beenden
   description: >
     Beendet die aktuelle Fahrt, berechnet die gefahrenen Kilometer und
-    speichert den Eintrag im Fahrtenbuch.
+    speichert den Eintrag im Fahrtenbuch. Mit end_km kann der KM-Stand
+    manuell angegeben werden wenn der Sensor noch veraltet ist.
   fields:
     trip_type:
       name: Fahrtentyp
@@ -30,6 +45,19 @@ stop_trip:
       example: Kundentermin München
       selector:
         text:
+    end_km:
+      name: End-KM (manuell)
+      description: >
+        Optionaler KM-Stand bei Fahrtende. Wenn angegeben, wird der
+        Sensorwert ignoriert – ideal wenn der Sensor noch nicht aktualisiert hat.
+      required: false
+      example: 12388
+      selector:
+        number:
+          min: 0
+          max: 9999999
+          step: 0.1
+          unit_of_measurement: km
 
 export_csv:
   name: Als CSV exportieren
