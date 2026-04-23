@@ -129,13 +129,13 @@ class FahrtenbuchCoordinator:
     # Service handlers                                                     #
     # ------------------------------------------------------------------ #
 
-    async def async_start_trip(self) -> None:
+    async def async_start_trip(self, start_km_override: float | None = None) -> None:
         """Record trip start with current odometer reading and location."""
         if self.is_trip_active:
             _LOGGER.warning("A trip is already active – ignoring start_trip")
             return
 
-        start_km = self._get_odometer()
+        start_km = start_km_override if start_km_override is not None else self._get_odometer()
         start_location = self._get_location()
 
         self._data["active_trip"] = {
@@ -150,13 +150,15 @@ class FahrtenbuchCoordinator:
             "Trip started – odometer: %s km, location: %s", start_km, start_location
         )
 
-    async def async_stop_trip(self, trip_type: str, purpose: str = "") -> None:
+    async def async_stop_trip(
+        self, trip_type: str, purpose: str = "", end_km_override: float | None = None
+    ) -> None:
         """Finalise the active trip and append it to the log."""
         if not self.is_trip_active:
             _LOGGER.warning("No active trip to stop")
             return
 
-        end_km = self._get_odometer()
+        end_km = end_km_override if end_km_override is not None else self._get_odometer()
         end_location = self._get_location()
         active = self._data["active_trip"]
         start_km = active.get("start_km")

@@ -40,12 +40,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # ------------------------------------------------------------------ #
 
     async def handle_start_trip(call: ServiceCall) -> None:
-        await coordinator.async_start_trip()
+        start_km = call.data.get("start_km")
+        await coordinator.async_start_trip(start_km_override=start_km)
 
     async def handle_stop_trip(call: ServiceCall) -> None:
         trip_type = call.data["trip_type"]
         purpose = call.data.get("purpose", "")
-        await coordinator.async_stop_trip(trip_type, purpose)
+        end_km = call.data.get("end_km")
+        await coordinator.async_stop_trip(trip_type, purpose, end_km_override=end_km)
 
     async def handle_export_csv(call: ServiceCall) -> None:
         path = await coordinator.async_export_csv()
@@ -58,6 +60,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         DOMAIN,
         SERVICE_START_TRIP,
         handle_start_trip,
+        schema=vol.Schema(
+            {
+                vol.Optional("start_km"): vol.Coerce(float),
+            }
+        ),
     )
 
     hass.services.async_register(
@@ -70,6 +77,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                     [TRIP_TYPE_BUSINESS, TRIP_TYPE_PRIVATE]
                 ),
                 vol.Optional("purpose", default=""): cv.string,
+                vol.Optional("end_km"): vol.Coerce(float),
             }
         ),
     )
