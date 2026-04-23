@@ -66,6 +66,52 @@ export_csv:
     Konfigurationsverzeichnis (fahrtenbuch_YYYYMMDD_HHMMSS.csv).
   fields: {}
 
+update_trip:
+  name: Fahrt bearbeiten
+  description: >
+    Ändert KM-Werte, Fahrtentyp oder Zweck eines bestehenden Eintrags.
+    km_driven wird automatisch neu berechnet.
+  fields:
+    trip_id:
+      name: Fahrt-ID
+      description: ID der zu bearbeitenden Fahrt (aus dem Sensor-Attribut)
+      required: true
+      selector:
+        text:
+    start_km:
+      name: Start-KM
+      required: false
+      selector:
+        number:
+          min: 0
+          max: 9999999
+          step: 0.1
+          unit_of_measurement: km
+    end_km:
+      name: End-KM
+      required: false
+      selector:
+        number:
+          min: 0
+          max: 9999999
+          step: 0.1
+          unit_of_measurement: km
+    trip_type:
+      name: Fahrtentyp
+      required: false
+      selector:
+        select:
+          options:
+            - label: Dienstlich
+              value: dienstlich
+            - label: Privat
+              value: privat
+    purpose:
+      name: Zweck / Ziel
+      required: false
+      selector:
+        text:
+
 delete_trip:
   name: Fahrt löschen
   description: Löscht einen einzelnen Fahrteneintrag anhand seiner ID.
