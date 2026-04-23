@@ -185,6 +185,40 @@ class FahrtenbuchCoordinator:
             "Trip ended – %.1f km, type: %s", km_driven or 0.0, trip_type
         )
 
+    async def async_update_trip(
+        self,
+        trip_id: str,
+        start_km: float | None = None,
+        end_km: float | None = None,
+        trip_type: str | None = None,
+        purpose: str | None = None,
+    ) -> None:
+        """Update fields of an existing trip and recalculate km_driven."""
+        trip = next(
+            (t for t in self._data["trips"] if t.get("id") == trip_id), None
+        )
+        if trip is None:
+            _LOGGER.warning("Trip '%s' not found for update", trip_id)
+            return
+
+        if start_km is not None:
+            trip["start_km"] = start_km
+        if end_km is not None:
+            trip["end_km"] = end_km
+        if trip_type is not None:
+            trip["trip_type"] = trip_type
+        if purpose is not None:
+            trip["purpose"] = purpose
+
+        s = trip.get("start_km")
+        e = trip.get("end_km")
+        if s is not None and e is not None:
+            trip["km_driven"] = round(float(e) - float(s), 1)
+
+        await self.async_save()
+        self._notify_listeners()
+        _LOGGER.info("Updated trip %s", trip_id)
+
     async def async_delete_trip(self, trip_id: str) -> None:
         """Remove a trip entry by ID."""
         before = len(self._data["trips"])

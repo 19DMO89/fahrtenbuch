@@ -15,6 +15,7 @@ from .const import (
     SERVICE_EXPORT_CSV,
     SERVICE_START_TRIP,
     SERVICE_STOP_TRIP,
+    SERVICE_UPDATE_TRIP,
     TRIP_TYPE_BUSINESS,
     TRIP_TYPE_PRIVATE,
 )
@@ -56,6 +57,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     async def handle_delete_trip(call: ServiceCall) -> None:
         await coordinator.async_delete_trip(call.data["trip_id"])
 
+    async def handle_update_trip(call: ServiceCall) -> None:
+        await coordinator.async_update_trip(
+            trip_id=call.data["trip_id"],
+            start_km=call.data.get("start_km"),
+            end_km=call.data.get("end_km"),
+            trip_type=call.data.get("trip_type"),
+            purpose=call.data.get("purpose"),
+        )
+
     hass.services.async_register(
         DOMAIN,
         SERVICE_START_TRIP,
@@ -95,6 +105,23 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         schema=vol.Schema(
             {
                 vol.Required("trip_id"): cv.string,
+            }
+        ),
+    )
+
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_UPDATE_TRIP,
+        handle_update_trip,
+        schema=vol.Schema(
+            {
+                vol.Required("trip_id"): cv.string,
+                vol.Optional("start_km"): vol.Coerce(float),
+                vol.Optional("end_km"): vol.Coerce(float),
+                vol.Optional("trip_type"): vol.In(
+                    [TRIP_TYPE_BUSINESS, TRIP_TYPE_PRIVATE]
+                ),
+                vol.Optional("purpose"): cv.string,
             }
         ),
     )

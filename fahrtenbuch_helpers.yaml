@@ -1,0 +1,45 @@
+# Fahrtenbuch Hilfs-Entitäten
+#
+# Diese Datei in das "packages/" Verzeichnis deiner HA-Konfiguration legen.
+# Falls noch kein packages-Verzeichnis existiert:
+#
+#   1. Ordner "packages" im HA-Konfigurationsverzeichnis anlegen
+#   2. In configuration.yaml folgendes ergänzen:
+#
+#        homeassistant:
+#          packages: !include_dir_named packages
+#
+#   3. Home Assistant neu starten
+
+input_text:
+  fahrtenbuch_edit_trip_id:
+    name: "Fahrtenbuch – Fahrt-ID"
+    max: 36
+
+input_number:
+  fahrtenbuch_edit_start_km:
+    name: "Fahrtenbuch – Start-KM bearbeiten"
+    min: 0
+    max: 9999999
+    step: 1
+    unit_of_measurement: km
+    icon: mdi:map-marker-right
+
+  fahrtenbuch_edit_end_km:
+    name: "Fahrtenbuch – End-KM bearbeiten"
+    min: 0
+    max: 9999999
+    step: 1
+    unit_of_measurement: km
+    icon: mdi:map-marker-check
+
+script:
+  fahrtenbuch_update_trip:
+    alias: "Fahrtenbuch – Fahrt speichern"
+    icon: mdi:content-save
+    sequence:
+      - service: fahrtenbuch.update_trip
+        data:
+          trip_id: "{{ states('input_text.fahrtenbuch_edit_trip_id') }}"
+          start_km: "{{ states('input_number.fahrtenbuch_edit_start_km') | float }}"
+          end_km: "{{ states('input_number.fahrtenbuch_edit_end_km') | float }}"
