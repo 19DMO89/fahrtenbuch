@@ -89,7 +89,7 @@ views:
           | Datum | Von | Bis | km | Typ | Zweck |
           |:------|:---:|:---:|---:|:----|:------|
           {%- for t in trips %}
-          | {{ t.start_time | as_datetime | as_local | strftime('%d.%m.%Y') }} | {{ t.start_time | as_datetime | as_local | strftime('%H:%M') }} | {{ t.end_time | as_datetime | as_local | strftime('%H:%M') if t.end_time else '–' }} | {{ t.km_driven | default('–') }} | {{ '🏢' if t.trip_type == 'dienstlich' else '🏠' }} {{ t.trip_type }} | {{ t.purpose if t.purpose else '–' }} |
+          | {{ t.start_time | as_datetime | as_timestamp | timestamp_custom('%d.%m.%Y') }} | {{ t.start_time | as_datetime | as_timestamp | timestamp_custom('%H:%M') }} | {{ t.end_time | as_datetime | as_timestamp | timestamp_custom('%H:%M') if t.end_time else '–' }} | {{ t.km_driven | default('–') }} | {{ '🏢' if t.trip_type == 'dienstlich' else '🏠' }} {{ t.trip_type }} | {{ t.purpose if t.purpose else '–' }} |
           {%- endfor %}
           {%- else %}
           *Noch keine Fahrten aufgezeichnet.*
