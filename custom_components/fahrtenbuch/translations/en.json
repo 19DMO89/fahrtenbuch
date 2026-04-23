@@ -1,0 +1,44 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up Fahrtenbuch",
+        "description": "Connect your car and person entity to the digital trip log.",
+        "data": {
+          "name": "Name",
+          "odometer_entity": "Odometer sensor (car)",
+          "person_entity": "Person or device tracker"
+        },
+        "data_description": {
+          "odometer_entity": "Sensor reporting the current odometer reading of your car.",
+          "person_entity": "Person or device tracker whose location is captured at trip start/end."
+        }
+      }
+    },
+    "error": {
+      "entity_not_found": "Entity not found. Please check the entity ID."
+    },
+    "abort": {
+      "already_configured": "This car/person combination is already configured."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "status": {
+        "name": "Status"
+      },
+      "trips_count": {
+        "name": "Total trips"
+      },
+      "km_business": {
+        "name": "Business km"
+      },
+      "km_private": {
+        "name": "Private km"
+      },
+      "active_start_km": {
+        "name": "Current trip start odometer"
+      }
+    }
+  }
+}

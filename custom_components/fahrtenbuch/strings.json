@@ -1,0 +1,44 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Fahrtenbuch einrichten",
+        "description": "Verbinde dein Auto und deine Person mit dem digitalen Fahrtenbuch.",
+        "data": {
+          "name": "Name",
+          "odometer_entity": "KM-Stand Sensor (Auto)",
+          "person_entity": "Personen- oder Geräte-Tracker"
+        },
+        "data_description": {
+          "odometer_entity": "Sensor, der den aktuellen Kilometerstand deines Autos meldet.",
+          "person_entity": "Person oder Device Tracker, dessen Standort beim Start/Ende der Fahrt erfasst wird."
+        }
+      }
+    },
+    "error": {
+      "entity_not_found": "Entität nicht gefunden. Bitte prüfe die Entitäts-ID."
+    },
+    "abort": {
+      "already_configured": "Diese Kombination aus Auto und Person ist bereits eingerichtet."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "status": {
+        "name": "Status"
+      },
+      "trips_count": {
+        "name": "Fahrten gesamt"
+      },
+      "km_business": {
+        "name": "Dienstliche KM"
+      },
+      "km_private": {
+        "name": "Private KM"
+      },
+      "active_start_km": {
+        "name": "Aktuelle Fahrt Start-KM"
+      }
+    }
+  }
+}

@@ -1,0 +1,52 @@
+start_trip:
+  name: Fahrt starten
+  description: >
+    Startet eine neue Fahrt. Der aktuelle KM-Stand des Autos und der Standort
+    der konfigurierten Person werden automatisch erfasst.
+  fields: {}
+
+stop_trip:
+  name: Fahrt beenden
+  description: >
+    Beendet die aktuelle Fahrt, berechnet die gefahrenen Kilometer und
+    speichert den Eintrag im Fahrtenbuch.
+  fields:
+    trip_type:
+      name: Fahrtentyp
+      description: Art der Fahrt
+      required: true
+      example: dienstlich
+      selector:
+        select:
+          options:
+            - label: Dienstlich
+              value: dienstlich
+            - label: Privat
+              value: privat
+    purpose:
+      name: Zweck / Ziel
+      description: Optionale Beschreibung (z. B. "Kundentermin München")
+      required: false
+      example: Kundentermin München
+      selector:
+        text:
+
+export_csv:
+  name: Als CSV exportieren
+  description: >
+    Exportiert alle Fahrten als CSV-Datei in das Home Assistant
+    Konfigurationsverzeichnis (fahrtenbuch_YYYYMMDD_HHMMSS.csv).
+  fields: {}
+
+delete_trip:
+  name: Fahrt löschen
+  description: Löscht einen einzelnen Fahrteneintrag anhand seiner ID.
+  fields:
+    trip_id:
+      name: Fahrten-ID
+      description: >
+        Die interne ID der Fahrt. Zu finden im Attribut "letzte_fahrten"
+        des Sensors "Fahrten gesamt".
+      required: true
+      selector:
+        text:
