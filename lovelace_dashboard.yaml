@@ -20,8 +20,6 @@ views:
         entities:
           - entity: sensor.fahrtenbuch_status
             name: Status
-          - entity: sensor.fahrtenbuch_aktuelle_fahrt_start_km
-            name: Start-KM (aktive Fahrt)
           - type: divider
           - entity: sensor.fahrtenbuch_fahrten_gesamt
             name: Fahrten gesamt
@@ -29,6 +27,20 @@ views:
             name: Dienstliche KM (gesamt)
           - entity: sensor.fahrtenbuch_private_km
             name: Private KM (gesamt)
+
+      # ---- Aktive Fahrt (nur sichtbar wenn Fahrt läuft) ------------------
+      - type: conditional
+        conditions:
+          - condition: state
+            entity: sensor.fahrtenbuch_status
+            state: "Fahrt aktiv"
+        card:
+          type: entities
+          title: Aktive Fahrt
+          show_header_toggle: false
+          entities:
+            - entity: sensor.fahrtenbuch_aktuelle_fahrt_start_km
+              name: Start-KM
 
       # ---- Aktions-Buttons -----------------------------------------------
       - type: horizontal-stack
