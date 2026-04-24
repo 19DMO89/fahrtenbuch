@@ -195,7 +195,11 @@ class FahrtenbuchCoordinator:
     ) -> None:
         """Update fields of an existing trip and recalculate km_driven."""
         trip = next(
-            (t for t in self._data["trips"] if t.get("id") == trip_id), None
+            (
+                t for t in self._data["trips"]
+                if t.get("id") == trip_id or t.get("id", "").startswith(trip_id)
+            ),
+            None,
         )
         if trip is None:
             _LOGGER.warning("Trip '%s' not found for update", trip_id)
